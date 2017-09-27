@@ -24,9 +24,19 @@
   with_items:
     - 3306
 
+
+- name: Creating directories for Mysql file limit configurations
+  file:
+    path: /etc/systemd/system/mysql.service.d/
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+
+# FIXME check that this file can be set up before mysql is installed, and then mysql won't overwrite it
 - name: Set open file limit in systemd (LimitNOFILE)
   blockinfile:
-    path: /etc/systemd/system/mysql.service.d/override.conf
+    dest: /etc/systemd/system/mysql.service.d/override.conf
     create: yes
     owner: root
     group: root
@@ -35,9 +45,11 @@
       [Service]
       LimitNOFILE=102400
 
+# After being set, these settings can be confirmed by doing
+# cat /proc/SOME_PID/limits
 - name: Set open file limit in security/limits.d
   blockinfile:
-    path: /etc/security/limits.d/90-nproc.conf
+    dest: /etc/security/limits.d/90-nproc.conf
     create: yes
     owner: root
     group: root
@@ -49,9 +61,14 @@
       * hard nproc 10240
       root soft nproc unlimited
 
+# FIXME prepare a temporary file that will be used by the "mysql_config_include_files" setting (ansible-role-mysql role)
+# It wil end up not in /etc/mysql/my.cnf but in /etc/my.cnf.d/open_files_limit.cnf
 - name: Set open file limit in MySQL config
   blockinfile:
-    path: /etc/mysql/my.cnf
+    dest: /tmp/mysql__open_files_limit.cnf
+    create: yes
+    owner: root
+    group: root
     block: |
       # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
       open_files_limit = 102400
