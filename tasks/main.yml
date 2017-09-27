@@ -24,6 +24,38 @@
   with_items:
     - 3306
 
+- name: Set open file limit in systemd (LimitNOFILE)
+  blockinfile:
+    path: /etc/systemd/system/mysql.service.d/override.conf
+    create: yes
+    owner: root
+    group: root
+    block: |
+      # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
+      [Service]
+      LimitNOFILE=102400
+
+- name: Set open file limit in security/limits.d
+  blockinfile:
+    path: /etc/security/limits.d/90-nproc.conf
+    create: yes
+    owner: root
+    group: root
+    block: |
+      # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
+      * soft nofile 102400
+      * hard nofile 102400
+      * soft nproc 10240
+      * hard nproc 10240
+      root soft nproc unlimited
+
+- name: Set open file limit in MySQL config
+  blockinfile:
+    path: /etc/mysql/my.cnf
+    block: |
+      # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
+      open_files_limit = 102400
+
 - name: Copy pre-backup script
   template:
     src: backup-pre-mysql.sh
