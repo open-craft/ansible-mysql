@@ -33,7 +33,7 @@
     owner: root
     group: root
 
-# FIXME check that this file can be set up before mysql is installed, and then mysql won't overwrite it
+# This setting has no effect in systems without systemd, like Ubuntu 14.04
 - name: Set open file limit in systemd (LimitNOFILE)
   blockinfile:
     dest: /etc/systemd/system/mysql.service.d/override.conf
@@ -45,7 +45,7 @@
       [Service]
       LimitNOFILE=102400
 
-# After being set, these settings can be confirmed by doing
+# After being set, these settings can be confirmed by doing:
 # cat /proc/SOME_PID/limits
 - name: Set open file limit in security/limits.d
   blockinfile:
@@ -61,16 +61,17 @@
       * hard nproc 10240
       root soft nproc unlimited
 
-# FIXME prepare a temporary file that will be used by the "mysql_config_include_files" setting (ansible-role-mysql role)
-# It wil end up not in /etc/mysql/my.cnf but in /etc/my.cnf.d/open_files_limit.cnf
+# After being set, this can be verified by logging in to mysql and doing:
+#    show global variables like 'open%';
 - name: Set open file limit in MySQL config
   blockinfile:
-    dest: /tmp/mysql__open_files_limit.cnf
+    dest: /etc/my.cnf.d/open_files_limit.cnf
     create: yes
     owner: root
     group: root
     block: |
       # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
+      [mysqld]
       open_files_limit = 102400
 
 - name: Copy pre-backup script
