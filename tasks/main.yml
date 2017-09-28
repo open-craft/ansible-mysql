@@ -37,8 +37,11 @@
     - /etc/mysql/conf.d/
     - /etc/systemd/system/mysql.service.d/
 
-# This setting has no effect in systems without systemd, like Ubuntu 14.04
-- name: Set open file limit in systemd (LimitNOFILE)
+# 
+# The numbers set in security/limits.d affect processes spawned by a login shell, but
+# not those spawned by systemd/upstart.
+# Ubuntu 14.04 uses upstart, Ubuntu 16.04 systemd.
+- name: Set open file limit in mysql through systemd
   blockinfile:
     dest: /etc/systemd/system/mysql.service.d/override.conf
     create: yes
@@ -48,6 +51,16 @@
       # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
       [Service]
       LimitNOFILE=102400
+- name: Set open file limit in mysql through upstart
+  blockinfile:
+    dest: /etc/init/mysql.conf
+    create: yes
+    owner: root
+    group: root
+    block: |
+      # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
+      limit nofile 102400
+      limit noproc 10240
 
 # After being set, these settings can be confirmed by doing:
 # cat /proc/SOME_PID/limits
