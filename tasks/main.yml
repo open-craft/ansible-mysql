@@ -51,16 +51,21 @@
       # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
       [Service]
       LimitNOFILE=102400
-- name: Set open file limit in mysql through upstart
-  blockinfile:
-    dest: /etc/init/mysql.conf
-    create: yes
-    owner: root
-    group: root
-    block: |
-      # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
-      limit nofile 102400
-      limit noproc 10240
+#
+# The "upstart" version is commented out because the presence of this small
+#  /etc/init/mysql.conf prevents the real one from being installed in a later step
+# (it ends in /etc/init/mysql.conf.dpkg-dist instead)
+#
+# - name: Set open file limit in mysql through upstart
+#   blockinfile:
+#     dest: /etc/init/mysql.conf
+#     create: yes
+#     owner: root
+#     group: root
+#     block: |
+#       # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
+#       limit nofile 102400
+#       limit noproc 10240
 
 # After being set, these settings can be confirmed by doing:
 # cat /proc/SOME_PID/limits
