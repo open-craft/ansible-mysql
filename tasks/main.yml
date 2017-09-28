@@ -65,7 +65,7 @@
 #    show global variables like 'open%';
 - name: Set open file limit in MySQL config
   blockinfile:
-    dest: /etc/my.cnf.d/open_files_limit.cnf
+    dest: /etc/mysql/conf.d/open_files_limit.cnf
     create: yes
     owner: root
     group: root
