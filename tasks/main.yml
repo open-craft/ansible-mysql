@@ -26,7 +26,7 @@
 #
 # Parameters to set the maximum number of open files
 #
-- name: Creating directories for Mysql file limit configurations
+- name: Creating directories for Mysql files limit configurations
   file:
     path: "{{ item }}"
     state: directory
@@ -41,7 +41,7 @@
 # The numbers set in security/limits.d affect processes spawned by a login shell, but
 # not those spawned by systemd/upstart.
 # Ubuntu 14.04 uses upstart, Ubuntu 16.04 systemd.
-- name: Set open file limit in mysql through systemd
+- name: Set open files limit in mysql through systemd
   blockinfile:
     dest: /etc/systemd/system/mysql.service.d/override.conf
     create: yes
@@ -57,7 +57,7 @@
 #  /etc/init/mysql.conf prevents the real one from being installed in a later step
 # (it ends in /etc/init/mysql.conf.dpkg-dist instead)
 #
-# - name: Set open file limit in mysql through upstart
+# - name: Set open files limit in mysql through upstart
 #   blockinfile:
 #     dest: /etc/init/mysql.conf
 #     create: yes
@@ -70,7 +70,7 @@
 
 # After being set, these settings can be confirmed by doing:
 # cat /proc/SOME_PID/limits
-- name: Set open file limit in security/limits.d
+- name: Set open files limit in security/limits.d
   blockinfile:
     dest: /etc/security/limits.d/90-nproc.conf
     create: yes
@@ -86,7 +86,7 @@
 
 # After being set, this can be verified by logging in to mysql and doing:
 #    show global variables like 'open%';
-- name: Set open file limit in MySQL config
+- name: Set open files limit in MySQL config
   blockinfile:
     dest: /etc/mysql/conf.d/open_files_limit.cnf
     create: yes
