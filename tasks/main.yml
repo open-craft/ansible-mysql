@@ -50,7 +50,7 @@
     block: |
       # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
       [Service]
-      LimitNOFILE=102400
+      LimitNOFILE={{ MYSQL_OPEN_FILES_LIMIT }}
 #
 # The "upstart" version is commented out because the presence of this small
 #  /etc/init/mysql.conf prevents the real one from being installed in a later step
@@ -64,8 +64,8 @@
 #     group: root
 #     block: |
 #       # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
-#       limit nofile 102400
-#       limit noproc 10240
+#       limit nofile {{ MYSQL_OPEN_FILES_LIMIT }}
+#       limit noproc {{ MYSQL_PROCESSES_LIMIT }}
 
 # After being set, these settings can be confirmed by doing:
 # cat /proc/SOME_PID/limits
@@ -77,10 +77,10 @@
     group: root
     block: |
       # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
-      * soft nofile 102400
-      * hard nofile 102400
-      * soft nproc 10240
-      * hard nproc 10240
+      * soft nofile {{ MYSQL_OPEN_FILES_LIMIT }}
+      * hard nofile {{ MYSQL_OPEN_FILES_LIMIT }}
+      * soft nproc {{ MYSQL_PROCESSES_LIMIT }}
+      * hard nproc {{ MYSQL_PROCESSES_LIMIT }}
       root soft nproc unlimited
 
 # After being set, this can be verified by logging in to mysql and doing:
@@ -94,7 +94,7 @@
     block: |
       # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
       [mysqld]
-      open_files_limit = 102400
+      open_files_limit = {{ MYSQL_OPEN_FILES_LIMIT }}
 
 - name: Copy pre-backup script
   template:
