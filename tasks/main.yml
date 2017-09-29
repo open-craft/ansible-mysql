@@ -64,8 +64,8 @@
 #     group: root
 #     block: |
 #       # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
-#       limit nofile {{ MYSQL_OPEN_FILES_LIMIT }}
-#       limit noproc {{ MYSQL_PROCESSES_LIMIT }}
+#       limit nofile {{ MYSQL_OPEN_FILES_LIMIT }} {{ MYSQL_OPEN_FILES_LIMIT }}
+#       limit nproc {{ MYSQL_PROCESSES_LIMIT }} {{ MYSQL_PROCESSES_LIMIT }}
 
 # After being set, these settings can be confirmed by doing:
 # cat /proc/SOME_PID/limits
