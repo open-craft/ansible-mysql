@@ -38,8 +38,8 @@
     - /etc/systemd/system/mysql.service.d/
 
 # 
-# The numbers set in security/limits.d affect processes spawned by a login shell, but
-# not those spawned by systemd/upstart.
+# The limits of processes started by systemd/upstart are governed by systemd/upstart
+# configuration files and not from security/limits.d
 # Ubuntu 14.04 uses upstart, Ubuntu 16.04 systemd.
 - name: Set open files limit in mysql through systemd
   blockinfile:
@@ -68,21 +68,24 @@
 #       limit nofile {{ MYSQL_OPEN_FILES_LIMIT }} {{ MYSQL_OPEN_FILES_LIMIT }}
 #       limit nproc {{ MYSQL_PROCESSES_LIMIT }} {{ MYSQL_PROCESSES_LIMIT }}
 
+# Settings in security/limits.d affect only processes started from login (i.e.
+# from an interactive shell). They aren't needed to change the limits of the mysql
+# process.
 # After being set, these settings can be confirmed by doing:
 # cat /proc/SOME_PID/limits
-- name: Set open files limit in security/limits.d
-  blockinfile:
-    dest: /etc/security/limits.d/90-nproc.conf
-    create: yes
-    owner: root
-    group: root
-    block: |
-      # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
-      * soft nofile {{ MYSQL_OPEN_FILES_LIMIT }}
-      * hard nofile {{ MYSQL_OPEN_FILES_LIMIT }}
-      * soft nproc {{ MYSQL_PROCESSES_LIMIT }}
-      * hard nproc {{ MYSQL_PROCESSES_LIMIT }}
-      root soft nproc unlimited
+# - name: Set open files limit in security/limits.d
+#   blockinfile:
+#     dest: /etc/security/limits.d/90-nproc.conf
+#     create: yes
+#     owner: root
+#     group: root
+#     block: |
+#       # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
+#       * soft nofile {{ MYSQL_OPEN_FILES_LIMIT }}
+#       * hard nofile {{ MYSQL_OPEN_FILES_LIMIT }}
+#       * soft nproc {{ MYSQL_PROCESSES_LIMIT }}
+#       * hard nproc {{ MYSQL_PROCESSES_LIMIT }}
+#       root soft nproc unlimited
 
 # After being set, this can be verified by logging in to mysql and doing:
 #    show global variables like 'open%';
