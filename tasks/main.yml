@@ -34,7 +34,6 @@
     owner: root
     group: root
   with_items:
-    - /etc/mysql/conf.d/
     - /etc/systemd/system/mysql.service.d/
 
 # 
@@ -52,19 +51,6 @@
       [Service]
       LimitNOFILE={{ MYSQL_OPEN_FILES_LIMIT }}
       LimitNPROC={{ MYSQL_PROCESSES_LIMIT }}
-
-# After being set, this can be verified by logging in to mysql and doing:
-#    show global variables like 'open%';
-- name: Set open files limit in MySQL config
-  blockinfile:
-    dest: /etc/mysql/conf.d/open_files_limit.cnf
-    create: yes
-    owner: root
-    group: root
-    block: |
-      # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
-      [mysqld]
-      open_files_limit = {{ MYSQL_OPEN_FILES_LIMIT }}
 
 - name: Copy pre-backup script
   template:
