@@ -52,40 +52,6 @@
       [Service]
       LimitNOFILE={{ MYSQL_OPEN_FILES_LIMIT }}
       LimitNPROC={{ MYSQL_PROCESSES_LIMIT }}
-#
-# The "upstart" version is commented out because the presence of this small
-#  /etc/init/mysql.conf prevents the real one from being installed in a later step
-# (it ends in /etc/init/mysql.conf.dpkg-dist instead)
-#
-# - name: Set open files limit in mysql through upstart
-#   blockinfile:
-#     dest: /etc/init/mysql.conf
-#     create: yes
-#     owner: root
-#     group: root
-#     block: |
-#       # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
-#       limit nofile {{ MYSQL_OPEN_FILES_LIMIT }} {{ MYSQL_OPEN_FILES_LIMIT }}
-#       limit nproc {{ MYSQL_PROCESSES_LIMIT }} {{ MYSQL_PROCESSES_LIMIT }}
-
-# Settings in security/limits.d affect only processes started from login (i.e.
-# from an interactive shell). They aren't needed to change the limits of the mysql
-# process.
-# After being set, these settings can be confirmed by doing:
-# cat /proc/SOME_PID/limits
-# - name: Set open files limit in security/limits.d
-#   blockinfile:
-#     dest: /etc/security/limits.d/90-nproc.conf
-#     create: yes
-#     owner: root
-#     group: root
-#     block: |
-#       # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
-#       * soft nofile {{ MYSQL_OPEN_FILES_LIMIT }}
-#       * hard nofile {{ MYSQL_OPEN_FILES_LIMIT }}
-#       * soft nproc {{ MYSQL_PROCESSES_LIMIT }}
-#       * hard nproc {{ MYSQL_PROCESSES_LIMIT }}
-#       root soft nproc unlimited
 
 # After being set, this can be verified by logging in to mysql and doing:
 #    show global variables like 'open%';
