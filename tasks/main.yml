@@ -41,12 +41,11 @@
 # configuration files and not from security/limits.d
 # Ubuntu 14.04 uses upstart, Ubuntu 16.04 systemd.
 - name: Set open files limit in mysql through systemd
-  blockinfile:
+  copy:
     dest: /etc/systemd/system/mysql.service.d/override.conf
-    create: yes
     owner: root
     group: root
-    block: |
+    content: |
       # cf https://duntuk.com/how-raise-ulimit-open-files-and-mysql-openfileslimit
       [Service]
       LimitNOFILE={{ MYSQL_OPEN_FILES_LIMIT }}
