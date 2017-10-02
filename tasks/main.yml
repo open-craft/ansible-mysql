@@ -35,8 +35,8 @@
     group: root
 
 # 
-# The limits of processes started by systemd/upstart are governed by systemd
-# configuration files and not from security/limits.d
+# The limits of processes started by systemd are governed by systemd configuration
+# files and not from security/limits.d
 - name: Set open files limit in mysql through systemd
   copy:
     dest: /etc/systemd/system/mysql.service.d/override.conf
