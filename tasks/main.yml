@@ -26,20 +26,17 @@
 #
 # Parameters to set the maximum number of open files
 #
-- name: Creating directories for Mysql files limit configurations
+- name: Creating directory for Mysql files limit configuration
   file:
-    path: "{{ item }}"
+    path: /etc/systemd/system/mysql.service.d/
     state: directory
     mode: 0755
     owner: root
     group: root
-  with_items:
-    - /etc/systemd/system/mysql.service.d/
 
 # 
-# The limits of processes started by systemd/upstart are governed by systemd/upstart
+# The limits of processes started by systemd/upstart are governed by systemd
 # configuration files and not from security/limits.d
-# Ubuntu 14.04 uses upstart, Ubuntu 16.04 systemd.
 - name: Set open files limit in mysql through systemd
   copy:
     dest: /etc/systemd/system/mysql.service.d/override.conf
